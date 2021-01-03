@@ -1,5 +1,5 @@
 from functools import reduce
-from numpy import lcm, gcd
+from numpy import lcm, gcd, floor
 
 def factorize(n):    
     factors = list(
@@ -20,7 +20,7 @@ def gcd_euclid_ext(a, b):  # doesn't work to find the inverse
     return x, y, gcd
 
 
-def usage():
+def use_rsa():
     # choose p and q:
     p = int(input("Enter prime 1: "))
     q = int(input("Enter prime 2, different from prime 1: "))
@@ -45,7 +45,15 @@ def usage():
         return
 
     # compute d:
-    d = e ** (phi - 1) % phi   # this works
+    #d = e ** (phi - 1) % phi   # this works, but isn't correct
+    k = 1
+    while k > 0:
+        d = (1 + k*phi) / e
+        if floor(d) == d:
+            print("k =", k)
+            break
+        else:
+            k += 1
     '''  # this doesn't work
     d1, d2, g = gcd_euclid_ext(e, n)
     d = list(filter(lambda x: x>0, [d1, d2]))
@@ -63,11 +71,12 @@ def usage():
     print("Public key:", enc_keys)
     message = int(input(f'For the message, enter an integer smaller than {n}: '))
     message_enc = message ** e % n
-    message_dec = message_enc ** d % n
-    print("Decoded message:", message_dec)
+    message_dec = message_enc ** d % n  # still wrong
+    print("Encrypted message:", message_enc)
+    print("Decrypted message:", message_dec)
 
 
-def attack():
+def crack_rsa():
     # find out p and q:
     pq = factorize(enc_keys[0])  # factorize n
 
@@ -92,7 +101,7 @@ def attack():
 
 
 def main():
-    usage()
+    use_rsa()
 
 if __name__ == '__main__':
     main()
