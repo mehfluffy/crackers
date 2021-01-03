@@ -51,6 +51,7 @@ def use_rsa():
         d = (1 + k*phi) / e
         if floor(d) == d:
             print("k =", k)
+            d = int(d)  # needed otherwise decryption goes wrong
             break
         else:
             k += 1
@@ -69,9 +70,10 @@ def use_rsa():
     enc_keys = [n, e]
     dec_keys = [n, d]
     print("Public key:", enc_keys)
+    print("Private key:", dec_keys)
     message = int(input(f'For the message, enter an integer smaller than {n}: '))
     message_enc = message ** e % n
-    message_dec = message_enc ** d % n  # still wrong
+    message_dec = message_enc ** d % n
     print("Encrypted message:", message_enc)
     print("Decrypted message:", message_dec)
 
