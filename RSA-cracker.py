@@ -1,5 +1,10 @@
 from functools import reduce
-from math import gcd, floor
+from math import gcd, floor #lcm only in 3.9+
+
+
+def lcm(a, b):
+    return (a*b) // gcd(a, b)
+
 
 def factorize(n):    
     factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]   # square root = biggest factor
@@ -7,19 +12,21 @@ def factorize(n):
 
 
 def use_rsa():
+    print("USING RSA:")
+
     # choose p and q:
     p = int(input("Enter prime 1: "))
     q = int(input("Enter prime 2, different from prime 1: "))
     n = p * q
 
     # compute phi and lambda:
-    phi = (p - 1) * (q - 1)
-    #lam = lcm(p - 1, q - 1)
+    phi = (p-1) * (q-1)
+    lam = lcm(p - 1, q - 1)
 
     # choose e:
     e_choices = []
-    for i in range(1, phi):
-        if gcd(i, phi) == 1:
+    for i in range(1, lam):
+        if gcd(i, lam) == 1:
             e_choices.append(i)
     if len(e_choices) > 1:
         e = int(input(f"Choose e as one of {e_choices}: "))
@@ -33,9 +40,8 @@ def use_rsa():
     # compute d:
     k = 1
     while k > 0:
-        d = (1 + k*phi) / e
+        d = (1 + k*lam) / e
         if floor(d) == d:
-            print("k =", k)
             d = int(d)  # needed otherwise decryption goes wrong
             break
         else:
@@ -56,6 +62,7 @@ def use_rsa():
 
 
 def crack_rsa(enc_keys, message_enc):
+    print("CRACKING RSA:")
     n, e = enc_keys
     # by factorizing n:
     pq = factorize(n)
@@ -65,11 +72,12 @@ def crack_rsa(enc_keys, message_enc):
     while pq:
         p_test = min(pq)
         q_test = max(pq)
-        phi_test = (p_test-1) * (q_test-1)
+        #phi_test = (p_test-1) * (q_test-1)
+        lam_test = lcm(p_test-1, q_test-1)
 
         k_test = 1
-        while k_test < 6:  # debug
-            test = 1 + k_test * phi_test
+        while k_test > 0:
+            test = 1 + k_test * lam_test
             if test % e == 0:
                 break  # inner loop
             else: k_test += 1
@@ -90,7 +98,9 @@ def crack_rsa(enc_keys, message_enc):
 
 def main():
     enc_keys, message_enc = use_rsa()
-    crack_rsa(enc_keys, message_enc)
+    resp = input("Attempt to crack encryption? [y/n]: ")
+    if resp == 'y':
+        crack_rsa(enc_keys, message_enc)
 
 if __name__ == '__main__':
     main()
