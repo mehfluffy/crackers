@@ -1,3 +1,8 @@
+#!/usr/bin/python3
+
+# inspired by https://github.com/feketebv/Montgomery_multiplication/blob/master/rsa_plain.py
+
+
 from functools import reduce
 from math import gcd, floor #lcm only in 3.9+
 
@@ -7,8 +12,8 @@ def lcm(a, b):
 
 
 def factorize(n):    
-    factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]   # square root = biggest factor
-    return set(reduce(list.__add__, factors)) # flatten and make into set (faster, no repeated element)
+    factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]   # , ignore 1 & n, square root = largest
+    return set(reduce(list.__add__, factors)) # flatten and make into set (faster, no repeated square roots)
 
 
 def use_rsa():
@@ -19,8 +24,7 @@ def use_rsa():
     q = int(input("Enter prime 2, different from prime 1: "))
     n = p * q
 
-    # compute phi and lambda:
-    phi = (p-1) * (q-1)
+    # compute lambda:
     lam = lcm(p - 1, q - 1)
 
     # choose e:
@@ -37,7 +41,7 @@ def use_rsa():
         print("No choices for e found, please choose bigger primes for p and q.")
         return
 
-    # compute d:
+    # compute d:  https://binaryterms.com/rsa-algorithm-in-cryptography.html#KeyGeneration
     k = 1
     while k > 0:
         d = (1 + k*lam) / e
@@ -68,11 +72,10 @@ def crack_rsa(enc_keys, message_enc):
     pq = factorize(n)
     print("Factors of n found:", pq)
 
-    # find k such that (k * (p - 1) * (q - 1) + 1) is divisible by e, the quotient would then be d.
+    # find k such that (1+k*lambda) is divisible by e, the quotient would then be d.
     while pq:
         p_test = min(pq)
         q_test = max(pq)
-        #phi_test = (p_test-1) * (q_test-1)
         lam_test = lcm(p_test-1, q_test-1)
 
         k_test = 1
