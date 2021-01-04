@@ -11,7 +11,7 @@ def lcm(a, b):
     return (a*b) // gcd(a, b)
 
 
-def factorize(n):    
+def factorize(n):
     factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]  # ignore 1 & n, square root = largest factor
     return set(reduce(list.__add__, factors))  # flatten and make into set (faster, no repeated square roots)
 
