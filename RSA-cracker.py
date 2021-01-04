@@ -12,16 +12,16 @@ def lcm(a, b):
 
 
 def factorize(n):    
-    factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]   # , ignore 1 & n, square root = largest
-    return set(reduce(list.__add__, factors)) # flatten and make into set (faster, no repeated square roots)
+    factors = [[i, n//i] for i in range(2, int(n**0.5)+1) if n%i==0]  # ignore 1 & n, square root = largest factor
+    return set(reduce(list.__add__, factors))  # flatten and make into set (faster, no repeated square roots)
 
 
 def use_rsa():
     print("USING RSA:")
 
     # choose p and q:
-    p = int(input("Enter prime 1: "))
-    q = int(input("Enter prime 2, different from prime 1: "))
+    p = int(input("Enter prime p (1 is not a prime number): "))
+    q = int(input("Enter prime q (different from prime p): "))
     n = p * q
 
     # compute lambda:
