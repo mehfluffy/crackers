@@ -4,7 +4,7 @@
 
 
 from functools import reduce
-from math import gcd, floor #lcm only in 3.9+
+from math import gcd, floor  #lcm only in 3.9+
 
 
 def lcm(a, b):
