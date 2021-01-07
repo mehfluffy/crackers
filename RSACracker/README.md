@@ -1,5 +1,5 @@
 # RSA cracker
-Simple executable crack RSA by factorisation, will take very long for large *n*.
+Simple executable to crack RSA by factorisation, will take very long for large *n*.
 
 ## Todo:
 * Plot out time to crack vs bitsize of *n*
